@@ -1,21 +1,24 @@
+from src.database import Database
 from src.model.employee import Employee
 from src.model.points import Points
 
 
-class PointsController:
+class Controller:
     def __init__(self):
+        self.database = Database()
         self.employees = []
         self.points = []
 
-    def add_employee(self, cpf, name, email, phone, address, role, salary, admission_date):
-        employee = Employee(cpf, name, email, phone, address, role, salary, admission_date)
-        self.employees.append(employee)
-        self.points.append(Points(employee_id=cpf))
+    def add_employee(self, cpf, name, email):
+        employee = Employee(cpf, name, email)
 
-    def update_employee_name(self, employee_id, name):
-        for employee in self.employees:
-            if employee.id == employee_id:
-                employee.name = name
+        self.database.employee_collection.insert_one(employee)
+        self.employees.append(employee)
+
+    def update_employee_name(self, cpf, name):
+        self.database.employee_collection.update_one({
+            "cpf": cpf,
+        }, {"$set": {"name": name}})
 
     def add_points(self, employee_id, amount):
         pass
