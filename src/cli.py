@@ -22,6 +22,7 @@ class SimpleCLI:
 
 class PointerCLI(SimpleCLI):
     def __init__(self):
+        super().__init__()
         self.controller = Controller()
 
         self.add_command('register_employee', self.register_employee)
@@ -40,7 +41,9 @@ class PointerCLI(SimpleCLI):
         self.controller.add_employee(cpf, email, name)
 
     def register_point(self):
-        pass
+        cpf = input("Entre com o CPF: ")
+
+        self.controller.add_points(cpf)
 
     def resume(self):
         pass
