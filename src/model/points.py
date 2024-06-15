@@ -1,17 +1,22 @@
+import datetime
 from uuid import uuid4
 
 
 class Points:
-    def __init__(self, employee_id, start_date=None, end_date=None):
+    def __init__(self, employee_id, start_date: datetime.datetime = None, end_date: datetime.datetime = None):
         self.point_id = str(uuid4())
         self.employee_id = employee_id
-        self.start_date = start_date
-        self.end_date = end_date
+        self.start_time = start_date
+        self.end_time = end_date
 
     def to_json(self):
         return {
             "point_id": self.point_id,
             "employee_id": self.employee_id,
-            "start_date": self.start_date,
-            "end_date": self.end_date,
+            "start_time": self._get_timestamp(self.start_time),
+            "end_time": self._get_timestamp(self.end_time),
         }
+
+    @staticmethod
+    def _get_timestamp(date: datetime.datetime | None):
+        return date.timestamp() if date is not None else None

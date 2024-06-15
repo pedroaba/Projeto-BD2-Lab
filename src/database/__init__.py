@@ -6,10 +6,7 @@ from pymongo.server_api import ServerApi
 
 class Database:
     def __init__(self):
-        self.conn = MongoClient(
-            uri="mongodb+srv://pedro007augustobarbosa:RkwVhRcueEGsCtzU@projeto-bd-2.cdge0lk.mongodb.net/?retryWrites=true&w=majority&appName=projeto-bd-2",
-            server_api=ServerApi('1')
-        )
+        self.conn = MongoClient("mongodb+srv://pedro007augustobarbosa:RkwVhRcueEGsCtzU@projeto-bd-2.cdge0lk.mongodb.net/?retryWrites=true&w=majority&appName=projeto-bd-2")
 
         try:
             self.conn.admin.command('ping')

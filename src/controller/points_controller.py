@@ -1,5 +1,7 @@
 import datetime
 
+import pymongo
+
 from src.database import Database
 from src.model.employee import Employee
 from src.model.points import Points
@@ -23,20 +25,38 @@ class Controller:
         }, {"$set": {"name": name}})
 
     def add_points(self, employee_id):
-        points = self.database.point_collection.find_one({
-            "employee_id": employee_id
-        })
-        if points:
+        point = self.database.point_collection.find_one({
+            "employee_id": employee_id,
+            "end_time": None
+        }, sort=[('start_time', pymongo.DESCENDING)])
+
+        if point is None:
             new_point = Points(employee_id, start_date=datetime.datetime.now())
             self.database.point_collection.insert_one(new_point.to_json())
-        else:
+        elif point["end_time"] is None:
             self.database.point_collection.update_one({
-                "employee_id": employee_id
-            }, {"$set": {"end_date": datetime.datetime.now()}})
+                '_id': point['_id']
+            }, {"$set": {"end_time": datetime.datetime.now().timestamp()}})
+        else:
+            raise Exception("Some thing is not ok!")
 
-    def remove_points(self, employee_id, amount):
-        pass
+    def remove_points(self, employee_id):
+        self.database.point_collection.delete_many({
+            'employee_id': employee_id
+        })
 
-    def get_employee_points(self, employee_id):
-        pass
+    def get_employee_by_cpf(self, cpf):
+        return self.database.employee_collection.find_one({
+            'cpf': cpf
+        })
 
+    def get_employees_points(self):
+        points = list(
+            self.database.point_collection.find(sort=[('start_time', pymongo.DESCENDING)])
+        )
+
+        for point in points:
+            point['start_time'] = datetime.datetime.fromtimestamp(point['start_time']).strftime('%A %d. %B %Y')
+            if 'end_time' in point and point['end_time'] is not None:
+                point['end_time'] = datetime.datetime.fromtimestamp(point['end_time']).strftime("%A %d. %B %Y")
+        return points
