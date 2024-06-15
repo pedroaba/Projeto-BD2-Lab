@@ -6,7 +6,7 @@ from openpyxl import load_workbook
 import pandas as pd
 from openpyxl.styles import PatternFill, Alignment
 
-from src.controller.points_controller import Controller
+from src.controller.controller import Controller
 
 
 class SimpleCLI:
@@ -46,10 +46,12 @@ class PointerCLI(SimpleCLI):
         super().__init__()
         self.controller = Controller()
 
-        self.add_command('register_employee', self.register_employee)
-        self.add_command('register_point', self.register_point)
+        self.add_command('register employee', self.register_employee)
+        self.add_command('register point', self.register_point)
         self.add_command('resume', self.resume)
-        self.add_command('update_employee_info', self.update_employee_info)
+        self.add_command('clear points of employee', self.clear_employee_points)
+        self.add_command('delete one point', self.delete_on_point)
+        self.add_command('update employee info', self.update_employee_info)
 
         self.run()
 
@@ -119,10 +121,19 @@ class PointerCLI(SimpleCLI):
         except Exception as e:
             return f"Empregado com o cpf: '{cpf}' não foi encontrado!"
 
+    def delete_on_point(self):
+        cpf = input("Entre com o CPF: ")
+        point_id = input("Entre com o Id do Ponto: ")
+
+        try:
+            self.controller.remove_points(cpf, point_id)
+        except Exception as e:
+            return f"Não foi possível deletar o ponto {point_id}"
+
     def clear_employee_points(self):
         cpf = input("Entre com o CPF: ")
 
         try:
-            self.controller.remove_points(cpf)
+            self.controller.clear_points(cpf)
         except Exception as e:
             return f"Empregado com o cpf: '{cpf}' não foi encontrado!"
