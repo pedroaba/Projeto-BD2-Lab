@@ -34,9 +34,14 @@ class Controller:
                 "employee_id": employee_id
             }, {"$set": {"end_date": datetime.datetime.now()}})
 
-    def remove_points(self, employee_id, amount):
-        pass
+    def remove_points(self, employee_id, point_id):
+        self.database.point_collection.delete_one({
+            "employee_id": employee_id,
+            "point_id": point_id
+        })
 
     def get_employee_points(self, employee_id):
-        pass
+        return self.database.point_collection.find({
+            "employee_id": employee_id
+        })
 
