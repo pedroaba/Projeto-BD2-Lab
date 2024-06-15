@@ -40,9 +40,20 @@ class Controller:
         else:
             raise Exception("Some thing is not ok!")
 
-    def remove_points(self, employee_id):
+    def remove_points(self, employee_id, point_id):
+        self.database.point_collection.delete_one({
+            "employee_id": employee_id,
+            "point_id": point_id
+        })
+
+    def clear_points(self, employee_id):
         self.database.point_collection.delete_many({
             'employee_id': employee_id
+        })
+
+    def get_employee_points(self, employee_id):
+        return self.database.point_collection.find({
+            "employee_id": employee_id
         })
 
     def get_employee_by_cpf(self, cpf):
